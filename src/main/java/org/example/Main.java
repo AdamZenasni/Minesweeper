@@ -9,11 +9,12 @@ public class Main {
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
 
-
+    // change to comments
+// this is not saving.
     public void start() {
         System.out.println("Welcome to Minesweeper");
         int minesPlaced = 0;
-
+        int minesAreHere = 3;
 
     }
 
