@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Minesweeper</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package org.example;
+
+import java.util.*;
+
+import static org.example.DisplayBoard.displayBoard;
+
+<span class="fc" id="L7">public class Main {</span>
+
+    // cannot take away flags
+    // can place flag on every cell and then win - what i need to do is introduce a flagsplaced and then
+    // if flag is placed in mine then it should be checked against it whether a bomb is there or not
+
+    // need to have three levels of difficulty - DONE
+    // can not start on a bomb - DONE
+    // flagging - DONE
+    // validate user input - DONE
+    // formatting of the board - DONE
+    // split into classes
+
+
+    public void minesweeperGame() {
+<span class="nc" id="L22">        Scanner reader = new Scanner(System.in);</span>
+<span class="nc" id="L23">        boolean gameIsOver = false;</span>
+<span class="nc" id="L24">        System.out.println(&quot;WELCOME TO MINESWEEPER&quot;);</span>
+
+<span class="nc" id="L26">        System.out.println(&quot;Please enter the difficulty level or choose custom settings:&quot;);</span>
+<span class="nc" id="L27">        System.out.println(&quot;1. Easy (10x10 board, 10 bombs)&quot;);</span>
+<span class="nc" id="L28">        System.out.println(&quot;2. Medium (15x15 board, 40 bombs)&quot;);</span>
+<span class="nc" id="L29">        System.out.println(&quot;3. Hard (20x20 board, 80 bombs)&quot;);</span>
+<span class="nc" id="L30">        System.out.println(&quot;4. Custom&quot;);</span>
+
+<span class="nc" id="L32">        int choice = 0;</span>
+<span class="nc bnc" id="L33" title="All 4 branches missed.">        while (choice &lt; 1 || choice &gt; 4) {</span>
+<span class="nc" id="L34">            System.out.print(&quot;Enter your choice: &quot;);</span>
+<span class="nc" id="L35">            choice = reader.nextInt();</span>
+<span class="nc" id="L36">            reader.nextLine();</span>
+<span class="nc bnc" id="L37" title="All 4 branches missed.">            if (choice &lt; 1 || choice &gt; 4) {</span>
+<span class="nc" id="L38">                System.out.println(&quot;Invalid choice. Please enter a number between 1 and 4.&quot;);</span>
+            }
+        }
+
+<span class="nc" id="L42">        int boardSize = 0;</span>
+<span class="nc" id="L43">        int numBombs = 0;</span>
+<span class="nc bnc" id="L44" title="All 5 branches missed.">        switch (choice) {</span>
+            case 1:
+<span class="nc" id="L46">                boardSize = 10;</span>
+<span class="nc" id="L47">                numBombs = 10;</span>
+<span class="nc" id="L48">                break;</span>
+            case 2:
+<span class="nc" id="L50">                boardSize = 15;</span>
+<span class="nc" id="L51">                numBombs = 40;</span>
+<span class="nc" id="L52">                break;</span>
+            case 3:
+<span class="nc" id="L54">                boardSize = 20;</span>
+<span class="nc" id="L55">                numBombs = 80;</span>
+<span class="nc" id="L56">                break;</span>
+            case 4: // Need to ensure they cannot put a board higher than 50 and more bombs than cells
+<span class="nc" id="L58">                boolean validSize = false;</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                while (!validSize) {</span>
+                    try {
+<span class="nc" id="L61">                        System.out.print(&quot;Enter board size (e.g., 10 for a 10x10 board, maximum is 50): &quot;);</span>
+<span class="nc" id="L62">                        boardSize = reader.nextInt();</span>
+<span class="nc bnc" id="L63" title="All 4 branches missed.">                        if (boardSize &gt; 0 &amp;&amp; boardSize &lt;= 50) {</span>
+<span class="nc" id="L64">                            validSize = true;</span>
+                        } else {
+<span class="nc" id="L66">                            System.out.println(&quot;Invalid board size. Please enter a number between 1 and 50.&quot;);</span>
+                        }
+<span class="nc" id="L68">                    } catch (Exception e) {</span>
+<span class="nc" id="L69">                        System.out.println(&quot;Invalid input. Please enter a valid number.&quot;);</span>
+<span class="nc" id="L70">                        reader.nextLine();</span>
+<span class="nc" id="L71">                    }</span>
+                }
+<span class="nc" id="L73">                boolean validBombs = false;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                while (!validBombs) {</span>
+                    try {
+<span class="nc" id="L76">                        System.out.print(&quot;Enter number of bombs (maximum is &quot; + boardSize + &quot;): &quot;);</span>
+<span class="nc" id="L77">                        numBombs = reader.nextInt();</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">                        if (numBombs &gt; 0 &amp;&amp; numBombs &lt;= boardSize) {</span>
+<span class="nc" id="L79">                            validBombs = true;</span>
+                        } else {
+<span class="nc" id="L81">                            System.out.println(&quot;Invalid number of bombs. Please enter a number between 1 and &quot; + boardSize + &quot;.&quot;);</span>
+                        }
+<span class="nc" id="L83">                    } catch (Exception e) {</span>
+<span class="nc" id="L84">                        System.out.println(&quot;Invalid input. Please enter a valid number.&quot;);</span>
+<span class="nc" id="L85">                        reader.nextLine();</span>
+<span class="nc" id="L86">                    }</span>
+                }
+                break;
+        }
+
+        // create the board template
+<span class="nc" id="L92">        Cell[][] board = createBoard(boardSize);</span>
+
+<span class="nc" id="L94">        displayBoard(board); // display the board</span>
+
+        // ensure the first guess cannot land on a bomb
+<span class="nc" id="L97">        int[] firstGuess = getCoordinates(reader, &quot;Please enter your coordinates (either as x y or x,y): &quot;, boardSize);</span>
+<span class="nc" id="L98">        int firstX = firstGuess[0];</span>
+<span class="nc" id="L99">        int firstY = firstGuess[1];</span>
+
+<span class="nc" id="L101">        board[firstX][firstY].isRevealed = true;</span>
+<span class="nc" id="L102">        placeBombs(boardSize, numBombs, board, firstX, firstY);</span>
+<span class="nc" id="L103">        countNeighboringMines(board);</span>
+<span class="nc" id="L104">        board = sweep(board, firstX, firstY);</span>
+<span class="nc" id="L105">        displayBoard(board);</span>
+<span class="nc" id="L106">        gameIsOver = checkIfGameIsWon(board);</span>
+
+        // NOW I NEED TO TAKE USER INPUT. And split it into x and y variables to check the list
+
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        while (!gameIsOver) {</span>
+<span class="nc" id="L111">            int[] userGuess = getCoordinates(reader, &quot;Please enter your coordinates (either as x y or x,y): &quot;, boardSize);</span>
+<span class="nc" id="L112">            int x = userGuess[0];</span>
+<span class="nc" id="L113">            int y = userGuess[1];</span>
+<span class="nc" id="L114">            boolean correctChoice = false;</span>
+
+<span class="nc bnc" id="L116" title="All 4 branches missed.">            if (board[x][y].isRevealed &amp;&amp; !board[x][y].isFlagged) { // if the cell is revealed</span>
+<span class="nc" id="L117">                System.out.println(&quot;Cell already revealed. Choose another one.&quot;); // is blocked.</span>
+            } else {
+                try {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                    while (!correctChoice) {</span>
+<span class="nc" id="L121">                        System.out.print(&quot;Do you want to flag this cell? (Y/N) Or would you like to unflag this cell? (U): &quot;);</span>
+<span class="nc" id="L122">                        String flagChoice = reader.nextLine().toUpperCase();</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                        if (flagChoice.equals(&quot;Y&quot;)) {</span>
+<span class="nc" id="L124">                            board[x][y].isFlagged = true;</span>
+<span class="nc" id="L125">                            correctChoice = true;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                        } else if (flagChoice.equals(&quot;U&quot;)) {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                            if (board[x][y].isFlagged) {</span>
+<span class="nc" id="L128">                                board[x][y].isFlagged = false;</span>
+<span class="nc" id="L129">                                correctChoice = true;</span>
+                            } else {
+<span class="nc" id="L131">                                System.out.println(&quot;No flag to remove. Please enter your coordinates again.&quot;);</span>
+                            }
+<span class="nc bnc" id="L133" title="All 2 branches missed.">                        } else if (flagChoice.equals(&quot;N&quot;)) {</span>
+<span class="nc" id="L134">                            break;</span>
+                        } else {
+<span class="nc" id="L136">                            System.out.println(&quot;Invalid Input. Please enter either Y (for Yes) or N (for No)&quot;);</span>
+<span class="nc" id="L137">                            reader.nextLine();</span>
+                        }
+<span class="nc" id="L139">                    }</span>
+<span class="nc" id="L140">                } catch (Exception e) {</span>
+<span class="nc" id="L141">                    System.out.println(&quot;Invalid coordinates. Please enter valid coordinates.&quot;);</span>
+<span class="nc" id="L142">                    continue;</span>
+<span class="nc" id="L143">                }</span>
+                // If the selected cell is empty, reveal it and its neighbors
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                if (board[x][y].mineCounter == 0) { // if it doesn't have any neighboring bombs.</span>
+<span class="nc" id="L146">                    board = sweep(board, x, y); // now we need to reveal as much of the board as possible</span>
+                } else {
+<span class="nc" id="L148">                    board[x][y].isRevealed = true;</span>
+                }
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                if (board[x][y].isMine) { // if they have hit a bomb</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                    if (board[x][y].isFlagged) { //</span>
+<span class="nc" id="L153">                        displayBoard(board);</span>
+                    } else {
+<span class="nc" id="L155">                        System.out.println(&quot;Unlucky, you have hit a bomb&quot;);</span>
+<span class="nc" id="L156">                        gameIsOver = true;</span>
+                    }
+                } else {
+<span class="nc" id="L159">                    countNeighboringMines(board); // count neighboring mines and update the display</span>
+<span class="nc" id="L160">                    displayBoard(board);</span>
+
+                    // Check if the game is won after updating the display
+<span class="nc" id="L163">                    gameIsOver = checkIfGameIsWon(board);</span>
+                }
+            }
+<span class="nc" id="L166">        }</span>
+<span class="nc" id="L167">    }</span>
+
+
+    private int[] getCoordinates(Scanner reader, String message, int boardSize) {
+<span class="nc" id="L171">        int[] intCoordinates = new int[2]; // create an array</span>
+<span class="nc" id="L172">        boolean validInput = false;</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        while (!validInput) {</span>
+            try {
+<span class="nc" id="L175">                System.out.print(message);</span>
+<span class="nc" id="L176">                String userGuess = reader.nextLine();</span>
+<span class="nc" id="L177">                String[] stringCoordinates = userGuess.split(&quot;[,\\s]+&quot;);</span>
+
+<span class="nc" id="L179">                System.out.println(Arrays.toString(stringCoordinates));</span>
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">                if (stringCoordinates.length != 2) {</span>
+<span class="nc" id="L182">                    System.out.println(&quot;Invalid coordinates. Please enter two numbers separated by either a space or a comma.&quot;);</span>
+<span class="nc" id="L183">                    continue;</span>
+                }
+
+<span class="nc" id="L186">                int x = Integer.parseInt(stringCoordinates[0]); // convert the strings into int</span>
+<span class="nc" id="L187">                int y = Integer.parseInt(stringCoordinates[1]);</span>
+
+                // making sure x and y are within the board
+<span class="nc bnc" id="L190" title="All 8 branches missed.">                if (x &lt; 0 || x &gt;= boardSize || y &lt; 0 || y &gt;= boardSize) {</span>
+<span class="nc" id="L191">                    System.out.println(&quot;Coordinates out of bounds. Please enter coordinates within the range (0-&quot; + (boardSize - 1) + &quot;).&quot;);</span>
+<span class="nc" id="L192">                    continue;</span>
+                }
+
+<span class="nc" id="L195">                intCoordinates[0] = x; // put x and y into an array of ints</span>
+<span class="nc" id="L196">                intCoordinates[1] = y;</span>
+<span class="nc" id="L197">                validInput = true;</span>
+<span class="nc" id="L198">            } catch (Exception e) {</span>
+<span class="nc" id="L199">                System.out.println(&quot;Invalid coordinates. Please enter two numbers separated by either a space or a comma.&quot;);</span>
+<span class="nc" id="L200">            }</span>
+        }
+<span class="nc" id="L202">        return intCoordinates;</span>
+    }
+
+    public Cell[][] createBoard(int size) {
+
+<span class="fc" id="L207">        Cell[][] board = new Cell[size][size];</span>
+
+<span class="fc bfc" id="L209" title="All 2 branches covered.">        for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">            for (int j = 0; j &lt; size; j++) {</span>
+<span class="fc" id="L211">                board[i][j] = new Cell(); // creating a cell class for every co-ordinate that will have the same fundamental details.</span>
+            }
+        }
+
+<span class="fc" id="L215">        return board;</span>
+    }
+
+    public static void placeBombs(int size, int numBombs, Cell[][] board, int firstMoveX, int firstMoveY) {
+
+<span class="fc" id="L220">        Random random = new Random();</span>
+<span class="fc" id="L221">        int bombsPlaced = 0;</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        while (bombsPlaced &lt; numBombs) {</span>
+<span class="fc" id="L223">            int x = random.nextInt(size);</span>
+<span class="fc" id="L224">            int y = random.nextInt(size);</span>
+<span class="pc bpc" id="L225" title="6 of 14 branches missed.">            if (!board[x][y].isMine &amp;&amp; !((x == firstMoveX || x == firstMoveX - 1 || x == firstMoveX + 1) &amp;&amp;</span>
+                    (y == firstMoveY || y == firstMoveY - 1 || y == firstMoveY + 1))) {
+<span class="fc" id="L227">                board[x][y].isMine = true;</span>
+<span class="fc" id="L228">                bombsPlaced++;</span>
+            }
+<span class="fc" id="L230">        }</span>
+<span class="fc" id="L231">    }</span>
+
+    public static Cell[][] sweep(Cell[][] board, int x, int y) { // reveal all the cells with numbers
+<span class="fc" id="L234">        board[x][y].isRevealed = true;</span>
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (board[x][y].isFlagged) {</span>
+<span class="nc" id="L236">            return board;</span>
+        }
+<span class="fc" id="L238">        List&lt;int[]&gt; neighbours = getNeighboringCells(board, x, y); // create an array of neighbouring cells to the one revealed</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">        if (neighbours.isEmpty()) {</span>
+<span class="fc" id="L240">            return board; // if there is no more to check return board</span>
+        }
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        for (int[] cell : neighbours) { //for every cell in the list</span>
+<span class="fc" id="L243">            board[cell[0]][cell[1]].isRevealed = true; // reveal the neighbouring cell</span>
+<span class="fc" id="L244">            board = sweep(board, cell[0], cell[1]);</span>
+<span class="fc" id="L245">        }</span>
+<span class="fc" id="L246">        return board;</span>
+    }
+
+    private static List&lt;int[]&gt; getNeighboringCells(Cell[][] board, int x, int y) {
+<span class="fc" id="L250">        List&lt;int[]&gt; neighbouringCells = new ArrayList&lt;&gt;(); // create an array of all cells that have a number in them</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        if (board[x][y].hasNumbers) {</span>
+<span class="nc" id="L252">            return neighbouringCells; // if the current cell being looked at has a number in, return to sweep</span>
+        }
+<span class="pc bpc" id="L254" title="1 of 6 branches missed.">        if ((x + 1) &lt; board.length &amp;&amp; (!board[x + 1][y].isMine &amp;&amp; !board[x + 1][y].isRevealed)) { // checking every direction</span>
+<span class="fc" id="L255">            int[] neighbouringCell = {x + 1, y};</span>
+<span class="fc" id="L256">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="fc bfc" id="L258" title="All 6 branches covered.">        if ((x - 1) &gt;= 0 &amp;&amp; (!board[x - 1][y].isMine &amp;&amp; !board[x - 1][y].isRevealed)) {</span>
+<span class="fc" id="L259">            int[] neighbouringCell = {x - 1, y};</span>
+<span class="fc" id="L260">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="pc bpc" id="L262" title="2 of 6 branches missed.">        if ((y + 1) &lt; board.length &amp;&amp; (!board[x][y + 1].isMine &amp;&amp; !board[x][y + 1].isRevealed)) {</span>
+<span class="nc" id="L263">            int[] neighbouringCell = {x, y + 1};</span>
+<span class="nc" id="L264">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="fc bfc" id="L266" title="All 6 branches covered.">        if ((y - 1) &gt;= 0 &amp;&amp; (!board[x][y - 1].isMine &amp;&amp; !board[x][y - 1].isRevealed)) {</span>
+<span class="fc" id="L267">            int[] neighbouringCell = {x, y - 1};</span>
+<span class="fc" id="L268">            neighbouringCells.add(neighbouringCell);</span>
+        }
+
+<span class="pc bpc" id="L271" title="1 of 8 branches missed.">        if ((x - 1) &gt;= 0 &amp;&amp; (y - 1) &gt;= 0 &amp;&amp; (!board[x - 1][y - 1].isMine &amp;&amp; !board[x - 1][y - 1].isRevealed)) {</span>
+<span class="fc" id="L272">            int[] neighbouringCell = {x - 1, y - 1};</span>
+<span class="fc" id="L273">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="pc bpc" id="L275" title="2 of 8 branches missed.">        if ((x + 1) &lt; board.length &amp;&amp; (y + 1) &lt; board.length &amp;&amp; (!board[x + 1][y + 1].isMine &amp;&amp; !board[x + 1][y + 1].isRevealed)) {</span>
+<span class="nc" id="L276">            int[] neighbouringCell = {x + 1, y + 1};</span>
+<span class="nc" id="L277">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="pc bpc" id="L279" title="2 of 8 branches missed.">        if ((x - 1) &gt;= 0 &amp;&amp; (y + 1) &lt; board.length &amp;&amp; (!board[x - 1][y + 1].isMine &amp;&amp; !board[x - 1][y + 1].isRevealed)) {</span>
+<span class="nc" id="L280">            int[] neighbouringCell = {x - 1, y + 1};</span>
+<span class="nc" id="L281">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="pc bpc" id="L283" title="2 of 8 branches missed.">        if ((x + 1) &lt; board.length &amp;&amp; (y - 1) &gt;= 0 &amp;&amp; (!board[x + 1][y - 1].isMine &amp;&amp; !board[x + 1][y - 1].isRevealed)) {</span>
+<span class="fc" id="L284">            int[] neighbouringCell = {x + 1, y - 1};</span>
+<span class="fc" id="L285">            neighbouringCells.add(neighbouringCell);</span>
+        }
+<span class="fc" id="L287">        return neighbouringCells;</span>
+    }
+
+    private static boolean checkIfGameIsWon(Cell[][] board) {
+<span class="nc bnc" id="L291" title="All 2 branches missed.">        for (Cell[] cells : board) {</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">            for (int j = 0; j &lt; board.length; j++) {</span>
+<span class="nc bnc" id="L293" title="All 6 branches missed.">                if (!cells[j].isRevealed &amp;&amp; !cells[j].isMine &amp;&amp; !cells[j].isFlagged) {</span>
+<span class="nc" id="L294">                    return false;</span>
+                }
+            }
+        }
+<span class="nc" id="L298">        System.out.println(&quot;Congratulations on winning the Game!!&quot;);</span>
+<span class="nc" id="L299">        return true;</span>
+    }
+
+    public void countNeighboringMines(Cell[][] board) {
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        for (int i = 0; i &lt; board.length; i++) {</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">            for (int j = 0; j &lt; board.length; j++) {</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">                if (!board[i][j].isMine) {</span>
+<span class="nc" id="L306">                    int mineCount = countMinesInNeighborhood(board, i, j);</span>
+<span class="nc" id="L307">                    board[i][j].mineCounter = mineCount;</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">                    board[i][j].hasNumbers = (mineCount &gt; 0);</span>
+                }
+            }
+        }
+<span class="nc" id="L312">    }</span>
+
+    private int countMinesInNeighborhood(Cell[][] board, int row, int col) {
+<span class="nc" id="L315">        int mineCount = 0;</span>
+<span class="nc bnc" id="L316" title="All 2 branches missed.">        for (int q = -1; q &lt;= 1; q++) {</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">            for (int w = -1; w &lt;= 1; w++) {</span>
+<span class="nc" id="L318">                int x = row + q;</span>
+<span class="nc" id="L319">                int y = col + w;</span>
+
+<span class="nc bnc" id="L321" title="All 10 branches missed.">                if (x &gt;= 0 &amp;&amp; x &lt; board.length &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; board[0].length &amp;&amp; board[x][y].isMine) {</span>
+<span class="nc" id="L322">                    mineCount++;</span>
+                }
+            }
+        }
+<span class="nc" id="L326">        return mineCount;</span>
+    }
+
+
+    public static void main(String[] args) {
+<span class="nc" id="L331">        Main mineSweeper = new Main();</span>
+<span class="nc" id="L332">        mineSweeper.minesweeperGame();</span>
+
+        // firstly - create a board
+        // 2nd - random number of mines. place mines in the board
+        // 3rd - display the board to the player.
+        // 4ty - take the user input
+        // 5th - check if user hits bomb- if they do - game is lost
+        // 6th - check if user doesn't hit bomb -
+        // 7th - then display the maths associated with minesweeper
+        // 8th - if hit bomb display shake thing.
+<span class="nc" id="L342">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
