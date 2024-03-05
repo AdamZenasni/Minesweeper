@@ -10,7 +10,7 @@ public class BoardTest {
     @Test
     public void testCreateBoard() {
         Main minesweeper = new Main();
-        Cell[][] board = minesweeper.createBoard(10);
+        Cell[][] board = CreateBoard.createBoard(10);
 
         assertEquals(10, board.length, "expected to create a board with ten rows");
         assertEquals(10, board[0].length, "expected to create a board with ten columns");
@@ -18,7 +18,6 @@ public class BoardTest {
 
     @Test
     public void testPlaceBombs() {
-        Main minesweeper = new Main();
         Cell[][] board = CreateBoard.createBoard(10);
         CreateBoard.placeBombs(10, 10, board, 0, 0);
 
@@ -38,7 +37,7 @@ public class BoardTest {
     @Test
     public void testRevealCoordinates() {
         Main minesweeper = new Main();
-        Cell[][] board = minesweeper.createBoard(3);
+        Cell[][] board = CreateBoard.createBoard(3);
 
         board[0][0].isMine = true;
         board[0][1].isMine = true;
