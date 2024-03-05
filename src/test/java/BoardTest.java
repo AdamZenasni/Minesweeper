@@ -1,4 +1,5 @@
 import org.example.Cell;
+import org.example.CreateBoard;
 import org.example.Main;
 import org.junit.jupiter.api.*;
 
@@ -18,8 +19,8 @@ public class BoardTest {
     @Test
     public void testPlaceBombs() {
         Main minesweeper = new Main();
-        Cell[][] board = minesweeper.createBoard(10);
-        Main.placeBombs(10, 10, board, 0, 0);
+        Cell[][] board = CreateBoard.createBoard(10);
+        CreateBoard.placeBombs(10, 10, board, 0, 0);
 
         int bombCount = 0;
         for (Cell[] row : board) {

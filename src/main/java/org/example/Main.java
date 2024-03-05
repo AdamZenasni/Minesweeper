@@ -89,7 +89,7 @@ public class Main {
         }
 
         // create the board template
-        Cell[][] board = createBoard(boardSize);
+        Cell[][] board = CreateBoard.createBoard(boardSize);
 
         displayBoard(board); // display the board
 
@@ -99,7 +99,7 @@ public class Main {
         int firstY = firstGuess[1];
 
         board[firstX][firstY].isRevealed = true;
-        placeBombs(boardSize, numBombs, board, firstX, firstY);
+        CreateBoard.placeBombs(boardSize, numBombs, board, firstX, firstY);
         countNeighboringMines(board);
         board = sweep(board, firstX, firstY);
         displayBoard(board);
@@ -108,8 +108,7 @@ public class Main {
         // NOW I NEED TO TAKE USER INPUT. And split it into x and y variables to check the list
 
         while (!gameIsOver) {
-            int[] userGuess = getCoordinates(reader, "Please enter your coordinates (either as x y or x,y): ", boardSize);
-            int x = userGuess[0];
+            int[] userGuess = getCoordinates(reader, "Please enter your coordinates (either as x y or x,y): ", boardSize);            int x = userGuess[0];
             int y = userGuess[1];
             boolean correctChoice = false;
 
@@ -126,6 +125,7 @@ public class Main {
                         } else if (flagChoice.equals("U")) {
                             if (board[x][y].isFlagged) {
                                 board[x][y].isFlagged = false;
+                                board[x][y].isRevealed = false;
                                 correctChoice = true;
                             } else {
                                 System.out.println("No flag to remove. Please enter your coordinates again.");
@@ -176,10 +176,9 @@ public class Main {
                 String userGuess = reader.nextLine();
                 String[] stringCoordinates = userGuess.split("[,\\s]+");
 
-                System.out.println(Arrays.toString(stringCoordinates));
 
                 if (stringCoordinates.length != 2) {
-                    System.out.println("Invalid coordinates. Please enter two numbers separated by either a space or a comma.");
+//                    System.out.println("Invalid coordinates. Please enter two numbers separated by either a space or a comma.");
                     continue;
                 }
 
@@ -202,33 +201,6 @@ public class Main {
         return intCoordinates;
     }
 
-    public Cell[][] createBoard(int size) {
-
-        Cell[][] board = new Cell[size][size];
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                board[i][j] = new Cell(); // creating a cell class for every co-ordinate that will have the same fundamental details.
-            }
-        }
-
-        return board;
-    }
-
-    public static void placeBombs(int size, int numBombs, Cell[][] board, int firstMoveX, int firstMoveY) {
-
-        Random random = new Random();
-        int bombsPlaced = 0;
-        while (bombsPlaced < numBombs) {
-            int x = random.nextInt(size);
-            int y = random.nextInt(size);
-            if (!board[x][y].isMine && !((x == firstMoveX || x == firstMoveX - 1 || x == firstMoveX + 1) &&
-                    (y == firstMoveY || y == firstMoveY - 1 || y == firstMoveY + 1))) {
-                board[x][y].isMine = true;
-                bombsPlaced++;
-            }
-        }
-    }
 
     public static Cell[][] sweep(Cell[][] board, int x, int y) { // reveal all the cells with numbers
         board[x][y].isRevealed = true;
@@ -291,6 +263,8 @@ public class Main {
         for (Cell[] cells : board) {
             for (int j = 0; j < board.length; j++) {
                 if (!cells[j].isRevealed && !cells[j].isMine && !cells[j].isFlagged) {
+                    return false;
+                } else if (cells[j].isFlagged && !cells[j].isMine) {
                     return false;
                 }
             }
